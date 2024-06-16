@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-jry6f!(-(l9asvkd%+qww&j038z2@c+ad37or6bo#j-%_m7fok
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
 
 
 # Application definition
@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'drf_spectacular',
     'drf_spectacular_sidecar',
+    'django.contrib.postgres',
 
     'market',
     'courier',
@@ -82,10 +83,23 @@ WSGI_APPLICATION = 'marketplace.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
+
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+
+        'ENGINE': 'django.db.backends.postgresql',
+
+        'NAME': 'database',
+
+        'USER': 'user',
+
+        'PASSWORD': 'pass',
+
+        'HOST': 'database',
+
+        'PORT': 5432,
+
     }
+
 }
 
 

@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 from courier.models import Courier, ParcelLocker
-from .models_choice import OrderStatus
+from .models_choice import OrderStatus, ProductCategory
 
 
 class Market(models.Model):
@@ -23,7 +23,7 @@ class Product(models.Model):
     description = models.TextField(verbose_name='Описание')
     market = models.ForeignKey(Market, on_delete=models.PROTECT, 
                                verbose_name='Магазин', related_name='products')
-    category = models.CharField(max_length=150, verbose_name='Категория товара')
+    category = models.CharField(choices=ProductCategory.choices, max_length=150, verbose_name='Категория товара')
     price = models.FloatField(verbose_name='Цена')
     storage = models.PositiveIntegerField(verbose_name='Количество в наличии')
     image = models.FileField(upload_to='products/')
@@ -55,7 +55,6 @@ class Basket(models.Model):
     
 
 class Order(models.Model):
-    products = models.ManyToManyField(Product)
     user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='orders',
                                                             verbose_name='Заказчик')
     parcel_locker = models.ForeignKey(ParcelLocker, related_name='orders', 
@@ -64,7 +63,8 @@ class Order(models.Model):
                               default=OrderStatus.FREE, verbose_name='Статус заказа')
     courier = models.ForeignKey(Courier, on_delete=models.PROTECT, related_name='orders', 
                                                         verbose_name='Курьер', blank=True)
-    
+    order_price = models.FloatField(verbose_name='Стоимость заказа')
+
     class Meta:
         verbose_name = 'Заказ'
         verbose_name_plural = 'Заказы'
@@ -73,3 +73,11 @@ class Order(models.Model):
         return f'id: {self.pk}, постамат: {self.parcel_locker.pk}, status: {self.status}'
 
 
+class OrderProduct(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.PROTECT)
+    amount = models.PositiveIntegerField()
+    order = models.ForeignKey(Order, on_delete=models.PROTECT, related_name='products')
+
+    class Meta:
+        verbose_name = 'Заказанный товар'
+        verbose_name_plural = 'Заказанные товары'
