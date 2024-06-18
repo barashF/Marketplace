@@ -1,4 +1,4 @@
-class AlreadyAddedToBasket():
+class AlreadyAddedToCart():
     def __init__(self):
         self.value = 'Товар уже добавлен в корзину'
 
@@ -8,7 +8,7 @@ class ShortageProduct():
         self.value = 'На складе недостаточно товара'
 
 
-class DontAddedToBasket():
+class DontAddedToCart():
     def __init__(self):
         self.value = 'Товар не найден в корзине'
 

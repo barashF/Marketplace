@@ -1,4 +1,3 @@
-from re import search
 from rest_framework import status
 from rest_framework.response import Response
 from django.contrib.postgres.search import SearchVector
@@ -15,38 +14,38 @@ from courier.exceptions import NotFoundParcelLocker
 from courier.errors import NotFoundFreeParcelLocker
 
 
-class QueriesBasket():
-    def create_basket(self, user, product):
+class QueriesCart():
+    def create_cart(self, user, product):
         try:
-            basket = managers.BasketManager().get_basket(user_id=user, 
+            cart = managers.CartManager().get_cart(user_id=user, 
                                                 product_id=product)
-            if basket:
-                raise exceptions.NotAddedToBasket(errors.AlreadyAddedToBasket().value)
+            if cart:
+                raise exceptions.NotAddedToCart(errors.AlreadyAddedToCart().value)
             
             data = {
                 'user': user,
                 'product':product
             }
-            serializer_basket = serializers.BasketSerializer(data=data)
-            serializer_basket.is_valid(raise_exception=True)
-            serializer_basket.save()
+            serializer_cart = serializers.CartSerializer(data=data)
+            serializer_cart.is_valid(raise_exception=True)
+            serializer_cart.save()
             return Response(status=status.HTTP_201_CREATED, data={'result':'success'})
 
-        except exceptions.NotAddedToBasket as e:
+        except exceptions.NotAddedToCart as e:
             return Response(status=status.HTTP_403_FORBIDDEN, data={'error':str(e)})
         
-    def delete_basket(self, data, user):
+    def delete_cart(self, data, user):
         try:
-            basket = managers.BasketManager().check_basket(user_id=user, 
-                                                           basket_id=data['basket'])
-            if basket is None:
-                raise exceptions.NotFoundBasket(errors.DontAddedToBasket().value)
+            cart = managers.CartManager().check_cart(user_id=user, 
+                                                           cart_id=data['cart'])
+            if cart is None:
+                raise exceptions.NotFoundCart(errors.DontAddedToCart().value)
             
-            managers.BasketManager().delete_basket(basket_id=basket.pk)
+            managers.CartManager().delete_cart(cart_id=cart.pk)
             return Response(status=status.HTTP_200_OK, 
                             data={'result':'success'})
         
-        except exceptions.NotFoundBasket as e:
+        except exceptions.NotFoundCart as e:
             return Response(status=status.HTTP_404_NOT_FOUND, 
                             data={'error':str(e)})
 

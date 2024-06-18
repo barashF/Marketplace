@@ -1,19 +1,19 @@
-from .models import Basket, Product
+from .models import Cart, Product
 
 
-class BasketManager():
+class CartManager():
     #получить экземпляр по фильтрам
-    def get_basket(self, user_id, product_id):
-        basket = Basket.objects.filter(user=user_id, 
+    def get_cart(self, user_id, product_id):
+        cart = Cart.objects.filter(user=user_id, 
                                        product=product_id).first()
-        return basket
+        return cart
     
-    def check_basket(self, user_id, basket_id):
-        basket = Basket.objects.filter(pk=basket_id, user=user_id).first()
-        return basket
+    def check_cart(self, user_id, cart_id):
+        cart = Cart.objects.filter(pk=cart_id, user=user_id).first()
+        return cart
     
-    def delete_basket(self, basket_id):
-        Basket.objects.delete(pk=basket_id)
+    def delete_cart(self, cart_id):
+        Cart.objects.delete(pk=cart_id)
 
 
 class OrderProductManager():

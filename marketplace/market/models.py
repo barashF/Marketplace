@@ -37,14 +37,17 @@ class Product(models.Model):
 
 
 class ImageProduct(models.Model):
-    product = models.ForeignKey(Product, related_name='images', on_delete=models.PROTECT)
+    product = models.ForeignKey(Product, related_name='images', 
+                                on_delete=models.PROTECT)
     image = models.FileField(upload_to='products/')
 
 
-class Basket(models.Model):
+class Cart(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT, 
-                             related_name='basket', verbose_name='Пользователь')
-    product = models.ForeignKey(Product, on_delete=models.PROTECT, verbose_name='Товар')
+                             related_name='cart', verbose_name='Пользователь')
+    product = models.ForeignKey(Product, on_delete=models.PROTECT, 
+                                verbose_name='Товар')
+    amount = models.PositiveIntegerField()
 
     class Meta:
         verbose_name = 'Корзина'
@@ -81,3 +84,5 @@ class OrderProduct(models.Model):
     class Meta:
         verbose_name = 'Заказанный товар'
         verbose_name_plural = 'Заказанные товары'
+
+

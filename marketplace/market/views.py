@@ -1,4 +1,3 @@
-from unittest import result
 from rest_framework.viewsets import ViewSet
 from rest_framework import views
 from rest_framework.permissions import AllowAny
@@ -9,8 +8,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 
 
-from .models import Product, Basket, Order
-from .forms import SearchForm
+from .models import Product, Cart, Order
 from . import serializers
 from . import queries
 
@@ -36,49 +34,49 @@ class ProductView(generics.GenericAPIView,
         return self.list(request, *args, **kwargs)
 
 
-@extend_schema(tags=['Basket'])
-class BasketView(ViewSet):
-    queryset = Order.objects.all()
+@extend_schema(tags=['Cart'])
+class CartView(ViewSet):
+    queryset = Cart.objects.all()
 
     @extend_schema( 
-        tags=['Basket'],
+        tags=['Cart'],
         description='Добавить товар в корзину',
         request=OpenApiRequest(OpenApiExample(name='Example add to basket')),
         responses={201: OpenApiTypes.OBJECT, 403: OpenApiTypes.OBJECT},
-        examples=[OpenApiExample(name='Example add to basket', 
+        examples=[OpenApiExample(name='Example add to Cart', 
                                  value={'result': 'success'}, 
                                 response_only=True, 
                                 status_codes=[201]),
-                OpenApiExample(name='Example add to basket', value={'error': 'error_message'}, 
+                OpenApiExample(name='Example add to Cart', value={'error': 'error_message'}, 
                                 response_only=True, 
                                 status_codes=[403]),
-                OpenApiExample(name='Example add to basket', 
+                OpenApiExample(name='Example add to Cart', 
                                 value={'product': '1'}, 
                                 request_only=True)
         ],
     )
     @action(methods=['post'], detail=False)
-    def add_basket(self, request):
-        response = queries.QueriesBasket().create_basket(user=request.user.pk, 
+    def add_cart(self, request):
+        response = queries.QueriesCart().create_cart(user=request.user.pk, 
                                                  product=request.data['product'])
         return response
     
     @extend_schema(description='Получить корзину пользователя',
-                   responses={200: serializers.BasketSerializer},
-        examples=[OpenApiExample(name='Example get basket', 
+                   responses={200: serializers.CartSerializer},
+        examples=[OpenApiExample(name='Example get cart', 
                                  value={'error':'message'}, 
                                  response_only=True, 
                                  status_codes=[404]),],)
     @action(methods=['get'], detail=False)
     def list_basket(self, request):
-        queryset = Basket.objects.filter(user=request.user.pk)
-        serializer_class = serializers.BasketSerializer(queryset, many=True)
+        queryset = Cart.objects.filter(user=request.user.pk)
+        serializer_class = serializers.CartSerializer(queryset, many=True)
         return Response(status=status.HTTP_200_OK, 
                         data={'result':serializer_class.data})
     
     @extend_schema(
         description='Удалить товар из корзины',
-        parameters=[OpenApiParameter(name='basket', description='id basket', required=True, type=int),],
+        parameters=[OpenApiParameter(name='cart', description='id cart', required=True, type=int),],
         request=OpenApiRequest(),
         responses={200: OpenApiTypes.OBJECT, 404: OpenApiTypes.OBJECT},
         examples=[OpenApiExample(name='Example delete basket', 
@@ -91,8 +89,8 @@ class BasketView(ViewSet):
                                  status_codes=[404]),
         ],
     )
-    def delete_basket(self, request):
-        response = queries.QueriesBasket().delete_basket(data=request.data, 
+    def delete_cart(self, request):
+        response = queries.QueriesCart().delete_cart(data=request.data, 
                                                          user=request.user)
         return response
 

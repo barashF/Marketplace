@@ -1,5 +1,4 @@
 from .models import ParcelLocker
-from market.models import Order
 from .models_choice import StatusParcelLocker
 
 

@@ -2,6 +2,7 @@ version: '3'
 
 services:
   web-app:
+    container_name: plov
     build:
       context: .
     ports:

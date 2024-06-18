@@ -1,4 +1,4 @@
-from .models import Product, ImageProduct, Basket, Order, OrderProduct
+from .models import Product, ImageProduct, Cart, Order, OrderProduct
 from rest_framework import serializers
 
 
@@ -17,11 +17,11 @@ class ProductSerializer(serializers.ModelSerializer):
                   'category', 'price', 'storage', 'image']
 
 
-class BasketSerializer(serializers.ModelSerializer):
+class CartSerializer(serializers.ModelSerializer):
     product = ProductSerializer(many=True)
 
     class Meta:
-        model = Basket
+        model = Cart
         fields = ['user', 'product']
 
 
